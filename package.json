@@ -1,0 +1,32 @@
+{
+  "name": "ConnectProxyLayer",
+  "version": "0.0.0",
+  "description": "Connect middleware to proxy requests to a different server",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/terribleplan/ConnectProxyLayer"
+  },
+  "keywords": [
+    "connect",
+    "middleware",
+    "proxy",
+    "http",
+    "https",
+    "request",
+    "tunnel"
+  ],
+  "author": "terribleplan",
+  "license": "BSD 2-Clause",
+  "bugs": {
+    "url": "https://github.com/terribleplan/ConnectProxyLayer/issues"
+  },
+  "homepage": "https://github.com/terribleplan/ConnectProxyLayer",
+  "dependencies": {
+    "request": "~2.34.0",
+    "qs": "^0.6.6"
+  }
+}
