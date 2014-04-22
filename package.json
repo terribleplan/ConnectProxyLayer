@@ -1,6 +1,6 @@
 {
   "name": "connect-proxy-layer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Connect middleware to proxy (and optionally transform) requests to a different server",
   "main": "index.js",
   "scripts": {
@@ -26,7 +26,6 @@
   },
   "homepage": "https://github.com/terribleplan/ConnectProxyLayer",
   "dependencies": {
-    "request": "~2.34.0",
     "qs": "^0.6.6"
   }
 }
