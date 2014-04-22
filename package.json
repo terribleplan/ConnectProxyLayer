@@ -1,7 +1,7 @@
 {
   "name": "ConnectProxyLayer",
-  "version": "0.0.0",
-  "description": "Connect middleware to proxy requests to a different server",
+  "version": "0.1.0-rc",
+  "description": "Connect middleware to proxy (and optionally transform) requests to a different server",
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
