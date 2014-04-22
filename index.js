@@ -2,7 +2,7 @@
 var qs = require('qs'), url = require('url');
 
 //And provide a way to pass in options and get back a piece of connect middleware
-module.exports = function middleware(endpoint, input, output) {
+module.exports = function middleware(endpoint, header, input, output) {
 
     //Figure out where and how we will be sending our request
     var parsedEndpoint = (typeof endpoint === "string" ? url.parse(endpoint) : endpoint);
@@ -67,6 +67,12 @@ module.exports = function middleware(endpoint, input, output) {
     }
 
     //Ensure that our interceptors are at least a no-op
+    if (typeof header !== "function") {
+        header = function header(localRequest, next, proxy, pump) {
+            pump(localRequest);
+        }
+    }
+
     if (typeof input !== "function") {
         input = function input(localRequest, requestBody, localResponse, nxt, proxy) {
             proxy(localRequest, requestBody, localResponse, nxt);
@@ -80,22 +86,69 @@ module.exports = function middleware(endpoint, input, output) {
     }
 
     return function (localRequest, localResponse, next) {
-
-        //Create a local scope
+        //Create a scope for the user-defined functions
         var interceptContext = {};
 
-        var localBody = "";
-        localRequest.on('data', function (chunk) {
-            localBody += chunk;
-        });
+        header.call(interceptContext, localRequest, next, function() {
+            var localBody = "";
+            localRequest.on('data', function (chunk) {
+                localBody += chunk;
+            });
 
-        localRequest.on('error', function (err) {
-            next(err);
-        });
+            localRequest.on('error', function (err) {
+                next(err);
+            });
 
-        localRequest.on('end', function () {
-            //And kick off the process with it
-            input.call(interceptContext, localRequest, localBody, localResponse, next, createProxy(interceptContext));
+            localRequest.on('end', function () {
+                //And kick off the process with it
+                delete localRequest.headers['x-requested-with'];
+                delete localRequest.headers['user-agent'];
+                delete localRequest.headers['accept-encoding'];
+                delete localRequest.headers['accept-language'];
+                delete localRequest.headers['cookie'];
+                localRequest.headers['Content-Type'] = localRequest.headers['content-type'];
+                delete localRequest.headers['content-type'];
+                input.call(interceptContext, localRequest, localBody, localResponse, next, createProxy(interceptContext));
+            });
+        }, function() {
+            if (typeof localRequest.query === "object") {
+                var parsed = url.parse(localRequest.url);
+                localRequest.url = parsed.pathname + "?" + qs.stringify(localRequest.query);
+            }
+
+            var requestLocation = parsedPath + localRequest.url;
+            localRequest.headers["host"] = parsedEndpoint.hostname + ":" + parsedEndpoint.port;
+
+            var req = {
+                headers: localRequest.headers,
+                host: parsedEndpoint.hostname,
+                port: parsedEndpoint.port,
+                path: requestLocation,
+                method: localRequest.method
+            };
+
+            var remoteRequest = reqLib.request(req, function (remoteResponse) {
+                //Read in all of the data
+                var data = "";
+                remoteResponse.on('data', function (chunk) {
+                    data += chunk;
+                });
+
+                remoteResponse.on('error', function (err) {
+                    next(err);
+                });
+
+                remoteResponse.on('end', function () {
+                    delete remoteResponse.headers['content-encoding'];
+                    output.call(interceptContext, remoteResponse, data, localResponse, next, sendOutput);
+                });
+            });
+
+            remoteRequest.on('error', function (err) {
+                next(err);
+            });
+
+            localRequest.pipe(remoteRequest);
         });
     }
 };
