@@ -1,6 +1,6 @@
 {
   "name": "ConnectProxyLayer",
-  "version": "0.1.0-rc",
+  "version": "0.1.0",
   "description": "Connect middleware to proxy (and optionally transform) requests to a different server",
   "main": "index.js",
   "scripts": {
