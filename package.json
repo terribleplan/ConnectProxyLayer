@@ -1,6 +1,6 @@
 {
-  "name": "ConnectProxyLayer",
-  "version": "0.1.0",
+  "name": "connect-proxy-layer",
+  "version": "0.1.2",
   "description": "Connect middleware to proxy (and optionally transform) requests to a different server",
   "main": "index.js",
   "scripts": {
@@ -19,14 +19,13 @@
     "request",
     "tunnel"
   ],
-  "author": "terribleplan",
+  "author": "Kegan Myers <kegan@keganmyers.com>",
   "license": "BSD 2-Clause",
   "bugs": {
     "url": "https://github.com/terribleplan/ConnectProxyLayer/issues"
   },
   "homepage": "https://github.com/terribleplan/ConnectProxyLayer",
   "dependencies": {
-    "request": "~2.34.0",
     "qs": "^0.6.6"
   }
 }

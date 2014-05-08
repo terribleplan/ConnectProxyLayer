@@ -2,6 +2,19 @@ ConnectProxyLayer
 =================
 Connect proxy layer is a piece of connect middleware that allows you to send requests on to another end server. Additionally, you can define functions for the proxy to use to modify the request in-flight. If you do not specify interceptors the proxy will simply pipe data from the input, and proxy the response.
 
+Usage
+-----
+Using connect-proxy-layer is as simple as:
+```js
+var cpl = require('connect-proxy-layer'), connect = require('connect');
+
+var app = connect();
+
+app.use("/api", cpl("http://api.example.com/"));
+
+app.listen(80);
+```
+
 Using Interceptors
 ------------------
 ####Header
