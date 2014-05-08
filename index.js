@@ -31,7 +31,10 @@ module.exports = function middleware(endpoint, header, input, output) {
         }
 
         var requestLocation = parsedPath + localRequest.url;
-        localRequest.headers["host"] = parsedEndpoint.hostname + ":" + parsedEndpoint.port;
+        localRequest.headers.host = parsedEndpoint.hostname;
+        if (parsedEndpoint.port) {
+            localRequest.headers.host += ":" + parsedEndpoint.port
+        }
 
         var req = {
             headers: localRequest.headers,
